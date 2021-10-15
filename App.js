@@ -1,8 +1,10 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Button, Image, TextInput } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { ScrollView } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Expenditure from "./components/Expenditure";
 
 const Stack = createNativeStackNavigator();
 
@@ -36,6 +38,10 @@ function HomeScreen({navigation}) {
           title="Expenditure"
           onPress={() => navigation.navigate('Expenditure')}
         />
+        <Button
+          title="Profile"
+          onPress={() => navigation.navigate('Home')}
+        />
       </View>
       <Image
           style= {{flex: 7, flexDirection: 'column', justifyContent: 'center', width: 450}}
@@ -65,6 +71,10 @@ function AboutScreen({navigation}) {
           title="Expenditure"
           onPress={() => navigation.navigate('Expenditure')}
         />
+        <Button
+          title="Profile"
+          onPress={() => navigation.navigate('Home')}
+        />
       </View>
       <Text style ={styles.main_text}>
         Hello, thank you for checking out this app. This is dedicated to personal expenditure tracking. It is a work in progress, but eventually it will help you keep track of your finances!
@@ -74,6 +84,58 @@ function AboutScreen({navigation}) {
 }
 
 function ExpenditureScreen({navigation}) {
+  const [expenditure, setExpenditure] = useState("");
+  const [history, setHistory] = useState([]);
+  const [sum, setSum] = useState(0);
+  
+
+  
+
+  const storeData = async (value) => {
+    try {
+      const jsonValue = JSON.stringify(value)
+      await AsyncStorage.setItem('@history', jsonValue)
+    } catch (e) {
+      console.dir(e)
+    }
+  }
+
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('@history')
+      let data = null
+      if (jsonValue!=null) {
+        data = JSON.parse(jsonValue)
+        setHistory(data.history)
+        setSum(data.sum)
+      } else {
+        setHistory([])
+        setSum(0)
+      }
+    } catch(e) {
+      console.dir(e)
+    }
+  }
+  
+
+  const onPressOut = () => {  
+    history.push(expenditure);
+    setSum(parseInt(sum)+parseInt(expenditure))
+    storeData({history, sum});
+    setExpenditure(0);
+  }
+  const clearData  = () => {
+    setHistory([]);
+    setSum(0);
+    setExpenditure(0);
+  }
+  useEffect(() => {getData()}
+           ,[])
+           
+  let history_arr = history.map((a) => {
+    return <View style={{ height:40, borderBottomWidth:2, borderBottomColor: '#ededed' }}><Text>{ a }</Text></View>                            
+  })  
+
   return (
     <View style={styles.container}>
       <View style={styles.button_row}>
@@ -91,12 +153,38 @@ function ExpenditureScreen({navigation}) {
           title="Expenditure"
           disabled
         />
+        <Button
+          title="Profile"
+          onPress={() => navigation.navigate('Home')}
+        />
       </View>
       <TextInput
         style={styles.input}
         placeholder="How Much Did You Spend?"
         keyboardType="numeric"
+        onChangeText ={text => {setExpenditure(text)}}
+        value = {expenditure}
       />
+      <View style={{flexDirection: "row"}}>
+        <Button
+          title ="Enter"
+          onPress = {() => {
+            onPressOut();
+            }
+          }
+        />
+        <Button title ="Clear"
+          onPress = {() => {
+            clearData();
+
+            }
+          }
+        />
+      </View>
+      <ScrollView style = {{maxHeight: 500}}>
+        {history_arr}
+        <Text style={{color:"#FF0000"}}>Sum: {sum}</Text>
+      </ScrollView>
     </View>
   );
 }
