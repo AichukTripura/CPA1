@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Expenditure from "./components/Expenditure";
+import { PieChart } from 'react-minimal-pie-chart';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,6 +16,7 @@ export default function App() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="About" component={AboutScreen} />
         <Stack.Screen name="Expenditure" component={ExpenditureScreen} />
+        <Stack.Screen name="Graph" component={GraphScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -39,8 +41,8 @@ function HomeScreen({navigation}) {
           onPress={() => navigation.navigate('Expenditure')}
         />
         <Button
-          title="Profile"
-          onPress={() => navigation.navigate('Home')}
+          title="Graph"
+          onPress={() => navigation.navigate('Graph')}
         />
       </View>
       <Image
@@ -72,13 +74,47 @@ function AboutScreen({navigation}) {
           onPress={() => navigation.navigate('Expenditure')}
         />
         <Button
-          title="Profile"
-          onPress={() => navigation.navigate('Home')}
+          title="Graph"
+          onPress={() => navigation.navigate('Graph')}
         />
       </View>
       <Text style ={styles.main_text}>
         Hello, thank you for checking out this app. This is dedicated to personal expenditure tracking. It is a work in progress, but eventually it will help you keep track of your finances!
       </Text>
+    </View>
+  );
+}
+
+function GraphScreen({navigation}) {
+  return (
+    <View style = {styles.container}>
+      <View style={styles.button_row}>
+        <Button
+          title="Home"
+          onPress={() => navigation.navigate('Home')}
+        />
+        <Text> </Text>
+        <Button
+          title="About"
+          onPress={() => navigation.navigate('About')}
+        />
+        <Text> </Text>
+        <Button
+          title="Expenditure"
+          onPress={() => navigation.navigate('Expenditure')}
+        />
+        <Button
+          title="Graph"
+          disabled
+        />
+      </View>
+      <PieChart
+        data={[
+          { title: 'Food', value: 10, color: '#E38627' },
+          { title: 'Rent', value: 15, color: '#C13C37' },
+          { title: 'Luxuries', value: 10, color: '#6A2135' },
+        ]}
+      />;
     </View>
   );
 }
@@ -154,8 +190,8 @@ function ExpenditureScreen({navigation}) {
           disabled
         />
         <Button
-          title="Profile"
-          onPress={() => navigation.navigate('Home')}
+          title="Graph"
+          onPress={() => navigation.navigate('Graph')}
         />
       </View>
       <TextInput
