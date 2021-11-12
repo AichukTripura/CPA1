@@ -25,3 +25,5 @@ SpendWisely simplifies keeping track of your personal finances. It provides visu
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
+![](./screenshot1.png)
