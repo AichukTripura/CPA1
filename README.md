@@ -16,7 +16,7 @@ expo start
 SpendWisely simplifies keeping track of your personal finances. It provides visualization tools to see how much money you are spending, and provides ways to easily enter what you are spending money on.
 
 ## Plugins
-
+x
 - @react-navigation
 - react-native-gesture-handler
 - @react-native-async-storage
@@ -27,3 +27,4 @@ SpendWisely simplifies keeping track of your personal finances. It provides visu
 [MIT](https://choosealicense.com/licenses/mit/)
 
 ![](./screenshot1.png)
+![](./CPAmov.mp4)
